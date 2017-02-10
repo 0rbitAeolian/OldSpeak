@@ -92,15 +92,15 @@ class AutoTreeBuilder(object):
         reverse_ancestry = [node]
         reverse_ancestry.extend(reversed(node.ancestry))
 
-        child_tree = self.tree
         if not root_tree:
-            root_tree = child_tree
-        else:
-            child_tree = root_tree
+            try:
+                root_tree = self.repo.TreeBuilder(self.repo.get(self.head).tree.id)
+            except:
+                pass
 
         def make_tree():
-            if child_tree:
-                return self.repo.TreeBuilder(child_tree.write())
+            if root_tree:
+                return self.repo.TreeBuilder(root_tree.write())
             else:
                 return self.repo.TreeBuilder()
 
@@ -112,19 +112,24 @@ class AutoTreeBuilder(object):
         for index, node in enumerate(reverse_ancestry):
             current_tree = make_tree()
             trees.append(current_tree)
-            child_tree = current_tree
 
             if index is 0:
                 logging.warning('inserting blob {}'.format(node.name))
-                child_tree.insert(node.name, content, pygit2.GIT_FILEMODE_BLOB)
-                content = child_tree.write()
+                current_tree.insert(node.name, content, pygit2.GIT_FILEMODE_BLOB)
+                content = current_tree.write()
             else:
                 logging.warning('inserting tree {}'.format(node.name))
-                child_tree.insert(node.name, content, pygit2.GIT_FILEMODE_TREE)
+                current_tree.insert(node.name, content, pygit2.GIT_FILEMODE_TREE)
                 content = current_tree.write()
 
-        new_root_id = current_tree.write()
+        if root_tree:
+            root_tree.insert(node.name, current_tree.write(), pygit2.GIT_FILEMODE_TREE)
+        elif not self.repo.head_is_unborn:
+            root_tree = self.repo.TreeBuilder(self.repo.head.tree.id)
+        else:
+            root_tree = trees[-1]
 
+        new_root_id = root_tree.write()
         parents = []
         if self.head:
             parents.append(self.head)

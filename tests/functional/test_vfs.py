@@ -76,4 +76,4 @@ def test_core_system_storage(context):
 
     # tree.should.be.a('_pygit2.Tree')
     blob.should.be.a('_pygit2.Blob')
-    system.list().should.equal(['9FF44C58C3F0456CCD41F4EE876863BB2759DF55.json', 'fingerprints/9FF44C58C3F0456CCD41F4EE876863BB2759DF55.json'])
+    system.list().should.equal(['fingerprints/9FF44C58C3F0456CCD41F4EE876863BB2759DF55.json'])
