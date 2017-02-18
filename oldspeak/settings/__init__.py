@@ -29,8 +29,16 @@ TEST_MODE = env.get('TEST_MODE', 'false')
 OLDSPEAK_WORKDIR = env.get('OLDSPEAK_WORKDIR', '/srv/oldspeak/sandbox')
 OLDSPEAK_DATADIR = env.get('OLDSPEAK_DATADIR', '/srv/oldspeak/private-data')
 OLDSPEAK_PUBLICDIR = env.get('OLDSPEAK_PUBLICDIR', '/srv/oldspeak/public-data')
-STATIC_FOLDER_PATH = env.get('OLDSPEAK_STATIC_FOLDER_PATH', project_file('static', 'dist'))
-HTML_TEMPLATE_PATH = env.get('OLDSPEAK_HTML_TEMPLATE_PATH', project_file('static', 'templates'))
+STATIC_FOLDER_PATH = env.get(
+    'OLDSPEAK_STATIC_FOLDER_PATH',
+    project_file(
+        'static',
+        'dist'))
+HTML_TEMPLATE_PATH = env.get(
+    'OLDSPEAK_HTML_TEMPLATE_PATH',
+    project_file(
+        'static',
+        'templates'))
 STATIC_URL_PREFIX = '/s'
 
 HTML_TEMPLATE_PATH = project_file('static', 'templates')
@@ -61,7 +69,9 @@ LOG_LEVEL_NAME = (env.get('LOG_LEVEL') or 'INFO').upper()
 
 # Database-related
 
-SQLALCHEMY_DATABASE_URI = env.get('SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2://01d5pk:kp5d10@localhost/01d5pk')
+SQLALCHEMY_DATABASE_URI = env.get(
+    'SQLALCHEMY_DATABASE_URI',
+    'postgresql+psycopg2://01d5pk:kp5d10@localhost/01d5pk')
 DATA_DIR = env.get('OLDSPEAK_DATADIR', "~/.oldspeak/data")
 REDIS_URI = env.get_uri("REDIS_URI") or 'redis://localhost:6379'
 

@@ -25,7 +25,8 @@ def setup_localhost(settings):
     #   redis://redis-server-hostname:6379/verylongpasswordhash
 
     settings.SESSION_SECRET_KEY = os.urandom(8).encode('hex')
-    settings.SQLALCHEMY_DATABASES['test'] = 'sqlite:///{}'.format(settings.project_file('k43p5d10.sqlite'))
+    settings.SQLALCHEMY_DATABASES[
+        'test'] = 'sqlite:///{}'.format(settings.project_file('k43p5d10.sqlite'))
     settings.REDIS_SERVERS['test'] = 'redis://localhost:6379'
     settings.SECRET_KEY = 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef'
     settings.OLDSPEAK_WORKDIR = settings.project_file('sandbox')

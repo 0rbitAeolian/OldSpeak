@@ -39,7 +39,10 @@ all: deps setup tests
 
 tests: lint smoke unit functional integration
 
-setup:
+build: clean
+	@python setup.py build_ext -i >> logs/setuptools-build_ext.log 2>&1
+
+setup: build
 	@./local/bootstrap.sh
 
 os-dependencies:
@@ -54,6 +57,7 @@ clean:
 	$(call ui.pending,"cleaning\ garbage\ files")
 	@rm -rf '*.egg-info' 'dist'
 	@find . -name '*.pyc' -exec rm -f {} \;
+	@rm -rf ./build/ ./docs/build/ ./integration-data/
 	$(call ui.ok)
 
 smoke:
@@ -72,8 +76,12 @@ unit:
 	nosetests --rednose --cover-erase tests/unit
 
 functional: database
-	# nosetests --with-spec --spec-color tests/functional/
-	nosetests --rednose tests/functional/
+	nosetests --with-spec --spec-color tests/functional/
+
+
+debug: database build
+	nosetests --rednose tests/functional/test_gpg_core.py
+
 
 integration: database
 	python -c 'import oldspeak.http'
@@ -85,13 +93,13 @@ tests: unit functional integration
 deps: pip pre-static
 
 remove:
-	-@pip uninstall -y oldspeak
+	-@pip uninstall -y oldspeak >> logs/pip-uninstall.log
 
 pip:
-	@pip install -U pip
-	@pip install -U setuptools
-	@pip install -r requirements.txt
-	@pip install -r development.txt
+	@pip install -U pip >> logs/pip-install.log
+	@pip install -U setuptools >> logs/pip-install.log
+	@pip install -r requirements.txt >> logs/pip-install.log
+	@pip install -r development.txt >> logs/pip-install.log
 
 database:
 	echo "DROP DATABASE IF EXISTS 01d5p34k;" | mysql -uroot
@@ -102,9 +110,12 @@ pythonpath:
 	-@(pip uninstall -y oldspeak 2>&1) > /dev/null 2>&1
 	-@(python setup.py develop 2>&1) > /dev/null 2>&1
 
-release:
+release: build tests dist
 	@./.release
-	@python setup.py sdist upload
+	@make dist
+
+dist: build
+	python setup.py sdist --force-manifest
 
 
 .PHONY: html-docs docs static oldspeak web pip remove tests
@@ -116,8 +127,8 @@ docs: html-docs
 	$(OPEN_COMMAND) docs/build/html/index.html
 
 pre-static:
-	@if [ ! -f ./static/node_modules/bootswatch/simplex/bootstrap.min.css ]; then (cd static && npm install); fi
-	@rm -rfv ./static/dist
+	@if [ ! -f ./static/node_modules/bootswatch/simplex/bootstrap.min.css ]; then (cd static && npm install) >> logs/npm.log 2>&1; fi
+	@rm -rf ./static/dist
 	@mkdir -p ./static/dist
 	@if [ -f ./static/node_modules/bootswatch/simplex/bootstrap.min.css ]; then cp -f static/node_modules/bootswatch/simplex/bootstrap.min.css static/dist/bootstrap.min.css; fi
 	@cp -f static/favicon.ico static/dist/favicon.ico
@@ -147,4 +158,3 @@ provision:	deps pythonpath static html-docs deploy
 quickie: deploy
 	@say 'done!'
 	@say 'done and done'
-	@echo "opening https://r131733.xyz"

@@ -12,7 +12,8 @@ class MetaRegistry(object):
     def __init__(self, parent, new, default_key=None, get_default_key=None):
         if not callable(new):
             raise TypeError(
-                'ParentRegistry(new) must be a callable: {new:repr}', **locals())
+                'ParentRegistry(new) must be a callable: {new:repr}',
+                **locals())
 
         self.parent = parent
         self.new = new
@@ -71,7 +72,8 @@ class helpers(type):
 
         if not isinstance(handle, basestring):
             raise TypeError(
-                '{}.__handle__ must be a string, not {}'.format(cls, type(handle)))
+                '{}.__handle__ must be a string, not {}'.format(
+                    cls, type(handle)))
 
         elif not is_valid_python_name(handle):
             raise TypeError(

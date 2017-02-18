@@ -57,7 +57,8 @@ def configure_logging(level_name, stream=None, filename=None):
 
     if stream_handler:
         stream_handler.setLevel(level)
-        stream_handler.setFormatter(ColoredFormatter(fmt='%(asctime)s %(name)s %(levelname)s %(message)s'))
+        stream_handler.setFormatter(ColoredFormatter(
+            fmt='%(asctime)s %(name)s %(levelname)s %(message)s'))
 
     if file_handler:
         json_formatter = JsonFormatter(

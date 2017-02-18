@@ -28,7 +28,8 @@ def patch_response(response, headers=None, no_cache=True, cookies=None):
         headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         headers['Pragma'] = 'no-cache'
         headers['Last-Modified'] = datetime.utcnow()
-        headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        headers[
+            'Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
         headers['Pragma'] = 'no-cache'
         headers['Expires'] = '-1'
 
@@ -51,7 +52,9 @@ def generate_token():
 
 
 def generate_seed(path):
-    return '&'.join((os.urandom(8).encode('hex').encode('rot13'), path.encode('hex')))
+    return '&'.join(
+        (os.urandom(8).encode('hex').encode('rot13'),
+         path.encode('hex')))
 
 
 def html(template, context=None, code=200, **kw):
@@ -61,7 +64,13 @@ def html(template, context=None, code=200, **kw):
 
 
 class HTMLRoute(object):
-    def __init__(self, route, template_name='index.html', oldspeak_token=None, seed=None):
+
+    def __init__(
+            self,
+            route,
+            template_name='index.html',
+            oldspeak_token=None,
+            seed=None):
         self.route = route
         self.template_name = template_name
         self.oldspeak_token = oldspeak_token
@@ -78,13 +87,15 @@ class HTMLRoute(object):
 
 
 class ServerComponent(BaseBlueprint):
+
     def __init__(self, module_name, *args, **kw):
         prefix = kw.pop('url_prefix', kw.pop('prefix', None))
         existing = __SERVER_COMPONENTS__.get(prefix, None)
         prefix = isinstance(prefix, basestring) and prefix.rstrip('/') or None
 
         if prefix in __SERVER_COMPONENTS__:
-            raise RuntimeError('prefix already in use by component: {}'.format(existing))
+            raise RuntimeError(
+                'prefix already in use by component: {}'.format(existing))
 
         name = module_name.split('.')[-1]
         kw['url_prefix'] = prefix
@@ -107,12 +118,17 @@ class ServerComponent(BaseBlueprint):
         return repr(self.endpoint_module)
 
     def route(self, path, methods=None, view_func=None):
-        path = "/{}".format("/".join([self.endpoint_prefix, path.strip().strip('/')]).strip('/'))
+        path = "/{}".format("/".join([self.endpoint_prefix,
+                                      path.strip().strip('/')]).strip('/'))
         name = path.replace('/', '.').strip('.')
 
         if callable(view_func):
             logger.debug('url rule %s', path)
-            return self.add_url_rule(path, endpoint=name, view_func=view_func, methods=methods)
+            return self.add_url_rule(
+                path,
+                endpoint=name,
+                view_func=view_func,
+                methods=methods)
 
         logger.debug('route %s', path)
         return super(ServerComponent, self).route(path, methods=methods)
@@ -154,7 +170,9 @@ def set_cors_into_headers(headers, allow_origin, allow_credentials=True, max_age
     headers[b'Access-Control-Max-Age'] = max_age
 
 
-def json_representation(data, code, headers={'Content-Type': 'application/json'}):
+def json_representation(
+    data, code, headers={
+        'Content-Type': 'application/json'}):
     set_cors_into_headers(headers, allow_origin=settings.DOMAIN)
     return json_response(data, code, headers)
 

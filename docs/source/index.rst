@@ -12,7 +12,8 @@ Oldspeak
 
    design
    source-code
-
+   bellyfeelgpg/api
+   bellyfeelgpg/cookbook
 
 Indices and tables
 ==================

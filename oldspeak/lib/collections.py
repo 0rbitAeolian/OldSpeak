@@ -13,6 +13,7 @@ Enum = type('Enum', (tuple, ), {
 
 class HttpDict(OrderedDict):
     """an OrderedDict that enforces appropriate http header keys"""
+
     def __setitem__(self, key, value):
         return super(HttpDict, self).__setitem__(
             normalize_http_header_name(key),

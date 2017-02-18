@@ -57,12 +57,15 @@ def join_pk_redirect():
 
 @root.post('/login/pk')
 def login_form_gpg():
-    return redirect(url_for('root.2fa'), cookies={'token': generate_temp_token()})
+    return redirect(
+        url_for('root.2fa'), cookies={
+            'token': generate_temp_token()})
 
 
 def generate_session_id(salt=None):
     salt = salt or settings.SECRET_KEY
-    return ''.join([generate_temp_token(64).encode('rot13'), hashlib.md5(salt).hexdigest()])
+    return ''.join([generate_temp_token(64).encode(
+        'rot13'), hashlib.md5(salt).hexdigest()])
 
 
 @root.route('/join/pk', methods=['POST'])
@@ -83,9 +86,16 @@ def join_form_gpg():
 
         session_id = generate_session_id()
         print keys, password, session_id
-        return redirect(url_for('root.2fa'), cookies={'session_id': session_id})
+        return redirect(
+            url_for('root.2fa'), cookies={
+                'session_id': session_id})
 
-    return html('debug.html', context={'error': {'title': 'Invalid Public GPG Key', 'message': pubkey}})
+    return html(
+        'debug.html',
+        context={
+            'error': {
+                'title': 'Invalid Public GPG Key',
+                'message': pubkey}})
 
 
 @root.get('/0rb1t')

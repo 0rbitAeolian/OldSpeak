@@ -293,7 +293,8 @@ class Model(object):
 
         data_type = self.__columns__.get(attr, None)
         builtins = dict(inspect.getmembers(__builtin__)).values()
-        if data_type and not isinstance(value, data_type) and data_type in builtins:
+        if data_type and not isinstance(
+                value, data_type) and data_type in builtins:
             return data_type(value)
 
         return value
@@ -302,7 +303,11 @@ class Model(object):
         date_types = (datetime.datetime, datetime.date)
 
         kind = self.__columns__.get(attr, None)
-        if issubclass(kind, date_types) and not isinstance(value, kind) and value:
+        if issubclass(
+                kind,
+                date_types) and not isinstance(
+                value,
+                kind) and value:
             return dateutil.parser.parse(value)
 
         return value
@@ -332,7 +337,8 @@ class Model(object):
         self).to_dict()`
         """
         keys = self.__columns__.keys()
-        return dict([(k, self.serialize_value(k, self.__data__.get(k))) for k in keys])
+        return dict([(k, self.serialize_value(k, self.__data__.get(k)))
+                     for k in keys])
 
     def to_insert_params(self):
         pre_data = Model.serialize(self)
@@ -340,7 +346,8 @@ class Model(object):
 
         primary_key_names = [x.name for x in self.table.primary_key.columns]
         keys_to_pluck = filter(
-            lambda x: x not in self.__columns__, data.keys()) + primary_key_names
+            lambda x: x not in self.__columns__,
+            data.keys()) + primary_key_names
 
         # not saving primary keys, let's let the SQL backend to take
         # care of auto increment.
@@ -409,8 +416,8 @@ class Model(object):
             self.__data__['id'] = res.inserted_primary_key[0]
             self.__data__.update(res.last_inserted_params())
         else:
-            res = conn.execute(
-                self.table.update().values(**self.to_insert_params()).where(self.table.c.id == mid))
+            res = conn.execute(self.table.update().values(
+                **self.to_insert_params()).where(self.table.c.id == mid))
             self.__data__.update(res.last_updated_params())
 
         return self

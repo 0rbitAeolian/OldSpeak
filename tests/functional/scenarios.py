@@ -4,6 +4,7 @@ import os
 import shutil
 import logging
 import coloredlogs
+# from glob import glob
 from sure import scenario
 # from datetime import datetime
 from oldspeak import settings
@@ -47,6 +48,7 @@ def prepare_subscriber_scenario(context):
 
 
 class db_connection(object):
+
     def __init__(self, alias):
         self.alias = alias
         self.engine = connectors.sql.get_pool(alias)
@@ -64,24 +66,40 @@ def cleanup_sql(context):
 
 
 def prepare_storage(context):
-    target = settings.OLDSPEAK_DATADIR
+    context.datadir_path = settings.OLDSPEAK_DATADIR
+    target = context.datadir_path
     if os.path.isdir(target):
         shutil.rmtree(target)
 
     os.makedirs(target)
+    # for target in glob('{0}/*'.format(settings.OLDSPEAK_DATADIR)):
+    #     if os.path.isdir(target):
+    #         shutil.rmtree(target)
+    #     elif os.path.isfile(target):
+    #         os.unlink(target)
+    #
+    # # os.makedirs(settings.OLDSPEAK_DATADIR)
 
 
 def cleanup_storage(context):
+    target = context.datadir_path
+    if os.path.isdir(target):
+        shutil.rmtree(target)
     # utcnow = datetime.utcnow()
     # shutil.copytree(settings.OLDSPEAK_DATADIR, '_'.join((settings.OLDSPEAK_DATADIR, utcnow.isoformat())))
     pass
 
 
 storage_scenario = scenario([prepare_storage], [cleanup_storage])
-web_scenario = scenario([prepare_storage, prepare_sql, prepare_server], [cleanup_server, cleanup_sql, cleanup_storage])
+web_scenario = scenario([prepare_storage, prepare_sql, prepare_server], [
+                        cleanup_server, cleanup_sql, cleanup_storage])
 sql_scenario = scenario(prepare_sql, cleanup_sql)
-api_admin_scenario = scenario([prepare_sql, prepare_server, prepare_admin_scenario], [cleanup_server, cleanup_sql])
-api_user_scenario = scenario([prepare_sql, prepare_server, prepare_subscriber_scenario], [cleanup_server, cleanup_sql])
+api_admin_scenario = scenario(
+    [prepare_sql, prepare_server, prepare_admin_scenario],
+    [cleanup_server, cleanup_sql])
+api_user_scenario = scenario(
+    [prepare_sql, prepare_server, prepare_subscriber_scenario],
+    [cleanup_server, cleanup_sql])
 
 
 def cookies(response):

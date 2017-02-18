@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-from tests.functional.fixtures import JohnDoe
+
 from oldspeak.crypt0 import InvitationRoster
+from tests.functional.fixtures import JohnDoe
+from tests.functional.scenarios import storage_scenario
 
 
-def test_gpg_invite_user():
+@storage_scenario
+def test_gpg_invite_user(context):
     roster = InvitationRoster()
 
-    guest_fingerprint = 'testfingerprint1'
-
-    roster.get_public_key(guest_fingerprint).should.be.none
-    roster.invite(
-        guest_fingerprint,
-        inviter_fingerprint=JohnDoe.fingerprint,
-    )
-    roster.get_public_key(guest_fingerprint).should.be.none
+    roster.get_public_key(JohnDoe.fingerprint).should.be.none
+    roster.invite(JohnDoe.public_key)
+    roster.get_public_key(
+        JohnDoe.fingerprint).should.contain('PUBLIC KEY BLOCK')

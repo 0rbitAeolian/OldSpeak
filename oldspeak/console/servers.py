@@ -32,11 +32,14 @@ def execute_command_run_pipeline():
 
     module = imp.load_source(module_name, args.path)
     all_members = dict(
-        map(lambda (name, member): (member.name, member),
-            filter(lambda (name, member): (
-                hasattr(member, 'name') and isinstance(member, type) and issubclass(member, Pipeline)
-            ), inspect.getmembers(module)))
-    )
+        map(
+            lambda name_member3: (
+                name_member3[1].name_member3[0], name_member3[1]), filter(
+                lambda name_member: (
+                    hasattr(
+                        name_member[1], 'name') and isinstance(
+                            name_member[1], type) and issubclass(
+                                name_member[1], Pipeline)), inspect.getmembers(module))))
 
     PipelineClass = all_members.get(args.name)
 
@@ -71,11 +74,14 @@ def execute_command_run_phase():
     ])
     module = imp.load_source(module_name, args.path)
     all_members = dict(
-        map(lambda (name, member): (member.job_type, member),
-            filter(lambda (name, member): (
-                hasattr(member, 'job_type') and isinstance(member, type) and issubclass(member, Phase)
-            ), inspect.getmembers(module)))
-    )
+        map(
+            lambda name_member4: (
+                name_member4[1].job_type, name_member4[1]), filter(
+                lambda name_member1: (
+                    hasattr(
+                        name_member1[1], 'job_type') and isinstance(
+                            name_member1[1], type) and issubclass(
+                                name_member1[1], Phase)), inspect.getmembers(module))))
 
     PhaseClass = all_members.get(args.job_type)
 
@@ -158,11 +164,14 @@ def execute_command_run_bundle():
 
     module = imp.load_source(module_name, args.path)
     all_members = dict(
-        map(lambda (name, member): (member.name, member),
-            filter(lambda (name, member): (
-                hasattr(member, 'name') and isinstance(member, type) and issubclass(member, Pipeline)
-            ), inspect.getmembers(module)))
-    )
+        map(
+            lambda name_member5: (
+                name_member5[1].name_member5[0], name_member5[1]), filter(
+                lambda name_member2: (
+                    hasattr(
+                        name_member2[1], 'name') and isinstance(
+                            name_member2[1], type) and issubclass(
+                                name_member2[1], Pipeline)), inspect.getmembers(module))))
 
     PipelineClass = all_members.get(args.name)
 

@@ -27,7 +27,12 @@ logger = get_logger()
 
 class Application(Flask):
 
-    def __init__(self, secret_key=settings.SECRET_KEY, host='127.0.0.1', port=None, ssl=None):
+    def __init__(
+            self,
+            secret_key=settings.SECRET_KEY,
+            host='127.0.0.1',
+            port=None,
+            ssl=None):
         app_node = Node(__file__).dir
         super(Application, self).__init__(
             __name__,
@@ -89,7 +94,9 @@ class Application(Flask):
         logger.error(tb)
 
         if settings.LOCAL:
-            return self.json_response({'error': 'bad-request', 'traceback': tb}, code=500)
+            return self.json_response(
+                {'error': 'bad-request', 'traceback': tb},
+                code=500)
         else:
             return html('500.html')
 
@@ -99,7 +106,14 @@ class Application(Flask):
     def get_url(self):
         return '{scheme}://{host}:{port}'.format(**self.__dict__)
 
-    def wsgi(self, port=None, host=None, max_accept=settings.GEVENT_MAX_CONNECTIONS, min_delay=0.1, max_delay=1, stop_timeout=1):
+    def wsgi(
+            self,
+            port=None,
+            host=None,
+            max_accept=settings.GEVENT_MAX_CONNECTIONS,
+            min_delay=0.1,
+            max_delay=1,
+            stop_timeout=1):
         if isinstance(port, int):
             self.port = port
 

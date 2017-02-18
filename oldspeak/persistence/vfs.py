@@ -17,6 +17,7 @@ class BlobNotFound(Exception):
 
 
 class GitNode(object):
+
     def __init__(self, path, ancestry=None, original_path=None):
         path = path.rstrip(os.sep) or '.'
         folder_name, file_name = os.path.split(path)
@@ -36,6 +37,7 @@ class GitNode(object):
 
 
 class GitFolder(GitNode):
+
     @property
     def is_root(self):
         return self.ancestry is None
@@ -46,7 +48,13 @@ class GitFile(GitNode):
 
 
 class AutoTreeBuilder(object):
-    def __init__(self, repo=None, author_name=None, author_email=None, message='auto saving'):
+
+    def __init__(
+            self,
+            repo=None,
+            author_name=None,
+            author_email=None,
+            message='auto saving'):
         self.repo = repo
         if not repo:
             return
@@ -61,7 +69,8 @@ class AutoTreeBuilder(object):
         self.tree = None
 
         if author_email:
-            self.signature = pygit2.Signature(author_name or author_email, author_email)
+            self.signature = pygit2.Signature(
+                author_name or author_email, author_email)
 
             if not self.head:
                 self.tree = self.repo.TreeBuilder()
@@ -94,7 +103,8 @@ class AutoTreeBuilder(object):
 
         if not root_tree:
             try:
-                root_tree = self.repo.TreeBuilder(self.repo.get(self.head).tree.id)
+                root_tree = self.repo.TreeBuilder(
+                    self.repo.get(self.head).tree.id)
             except:
                 pass
 
@@ -115,15 +125,20 @@ class AutoTreeBuilder(object):
 
             if index is 0:
                 logging.warning('inserting blob {}'.format(node.name))
-                current_tree.insert(node.name, content, pygit2.GIT_FILEMODE_BLOB)
+                current_tree.insert(
+                    node.name, content, pygit2.GIT_FILEMODE_BLOB)
                 content = current_tree.write()
             else:
                 logging.warning('inserting tree {}'.format(node.name))
-                current_tree.insert(node.name, content, pygit2.GIT_FILEMODE_TREE)
+                current_tree.insert(
+                    node.name, content, pygit2.GIT_FILEMODE_TREE)
                 content = current_tree.write()
 
         if root_tree:
-            root_tree.insert(node.name, current_tree.write(), pygit2.GIT_FILEMODE_TREE)
+            root_tree.insert(
+                node.name,
+                current_tree.write(),
+                pygit2.GIT_FILEMODE_TREE)
         elif not self.repo.head_is_unborn:
             root_tree = self.repo.TreeBuilder(self.repo.head.tree.id)
         else:
@@ -139,7 +154,7 @@ class AutoTreeBuilder(object):
                 'refs/heads/master',
                 self.signature,
                 self.signature,
-                'changing {path}'.format(**locals()),
+                'writing blob {path}'.format(**locals()),
                 new_root_id,
                 parents,
             )
@@ -148,6 +163,7 @@ class AutoTreeBuilder(object):
 
 
 class GitRepository(object):
+
     def __init__(self, path, root_dir=None):
         self.relative_path = path
         self.root_dir = root_dir or "."
@@ -292,7 +308,14 @@ class GitRepository(object):
 
 
 class Bucket(object):
-    def __init__(self, path=None, author_name=None, author_email=None, *args, **kw):
+
+    def __init__(
+            self,
+            path=None,
+            author_name=None,
+            author_email=None,
+            *args,
+            **kw):
         self.new(path, *args, **kw)
         self.path = path or self.get_path()
         self.repo = GitRepository(self.path, settings.OLDSPEAK_DATADIR)
@@ -300,7 +323,14 @@ class Bucket(object):
         self.author_name = author_name or 'oldspeak'
         self.author_email = author_email or 'oldspeak@oldspeak'
 
-    def write_file(self, name, data, message=None, author_name=None, author_email=None, **kw):
+    def write_file(
+            self,
+            name,
+            data,
+            message=None,
+            author_name=None,
+            author_email=None,
+            **kw):
         commit_data = {
             'message': message or 'changing {name}'.format(**locals()),
             'author_name': author_name or self.author_name,
@@ -312,16 +342,16 @@ class Bucket(object):
         self.repo.commit(**commit_data)
         return blob
 
-    def save(self, message=None, author_name=None, author_email=None, **kw):
-        kw = {}
-        if message:
-            kw['message'] = message
-
-        kw['author_name'] = author_name or self.author_name
-        kw['author_email'] = author_email or self.author_email
-
-        # commit = self.repo.commit(**kw)
-        # return commit
+    # def save(self, message=None, author_name=None, author_email=None, **kw):
+    #     kw = {}
+    #     if message:
+    #         kw['message'] = message
+    #
+    #     kw['author_name'] = author_name or self.author_name
+    #     kw['author_email'] = author_email or self.author_email
+    #
+    #     # commit = self.repo.commit(**kw)
+    #     # return commit
 
     def resolve(self, oid):
         return self.repo.git.get(oid)
@@ -342,6 +372,7 @@ class Bucket(object):
 
 
 class System(Bucket):
+
     def new(self, child='core'):
         self.child = child
 
@@ -349,15 +380,17 @@ class System(Bucket):
         return '/'.join(filter(bool, ('system', self.child)))
 
     def add_fingerprint(self, fingerprint, email, parent_fingerprint, **kw):
-        blob = self.write_file('fingerprints/{}.json'.format(fingerprint), json.dumps({
-            'email': email,
-            'fingerprint': fingerprint,
-            'parent_fingerprint': parent_fingerprint,
-        }, indent=4))
+        blob = self.write_file(
+            'fingerprints/{}.json'.format(fingerprint),
+            json.dumps(
+                {'email': email, 'fingerprint': fingerprint,
+                 'parent_fingerprint': parent_fingerprint, },
+                indent=4))
         return blob
 
 
 class Member(Bucket):
+
     def new(self, fingerprint):
         if not fingerprint:
             raise RuntimeError('members require a fingerprint')

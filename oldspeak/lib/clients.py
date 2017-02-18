@@ -12,7 +12,13 @@ from oldspeak.lib.functions import utf8
 
 class ClientResponse(object):
 
-    def __init__(self, headers, data=None, status_code=None, oauth_token=None, response=None):
+    def __init__(
+            self,
+            headers,
+            data=None,
+            status_code=None,
+            oauth_token=None,
+            response=None):
         self.headers = CaseInsensitiveDict(headers)
         self.data = data
         self.status_code = status_code
@@ -23,7 +29,11 @@ class ClientResponse(object):
 
     @classmethod
     def from_response(cls, response):
-        return cls(headers=response.headers, data=response.content, status_code=response.status_code, response=response)
+        return cls(
+            headers=response.headers,
+            data=response.content,
+            status_code=response.status_code,
+            response=response)
 
     def to_python(self):
         result = {}
@@ -94,4 +104,6 @@ class OldSpeakClient(object):
         return ClientResponse.from_response(response)
 
     def sign_up(self, public_key):
-        return self.request('post', '/join', data={'public_key': public_key}, headers={'Content-Type': 'multipart/form-data'})
+        return self.request(
+            'post', '/join', data={'public_key': public_key},
+            headers={'Content-Type': 'multipart/form-data'})

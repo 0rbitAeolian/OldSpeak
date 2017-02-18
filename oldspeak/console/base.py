@@ -38,7 +38,11 @@ def execute_command_version():
         prog='oldspeak version --json',
         description='prints the software version')
 
-    parser.add_argument('--json', action='store_true', default=False, help='shows the version as a json')
+    parser.add_argument(
+        '--json',
+        action='store_true',
+        default=False,
+        help='shows the version as a json')
 
     args = parser.parse_args(get_sub_parser_argv())
 

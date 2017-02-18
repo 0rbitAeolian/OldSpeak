@@ -23,3 +23,8 @@ provisioning/site.retry
 data_20*
 README.html
 docs/build/html
+logs/*.log
+*.so
+*.dylib
+build/
+integration-data/
