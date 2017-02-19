@@ -35,8 +35,7 @@ bf6p6 = Extension(
         'bf6p6/src/bf6p6-genkey.c',
     ],
     include_dirs=INCLUDE_DIRS,
-
-    libraries=['gpgme']
+    libraries=['gpgme', 'libgit2']
 )
 
 dependencies = filter(bool, map(bytes.strip, local_file('requirements.txt').splitlines()))
