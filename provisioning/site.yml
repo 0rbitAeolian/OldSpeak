@@ -2,11 +2,11 @@
 - hosts:
     - oldspeak
 
-  sudo: yes
-  user: d3pl0y
+  user: root
   vars:
-    local_repository_root_path: "{{ playbook_dir }}/.."
+    gitea_version: 1.0.1
 
+    local_repository_root_path: "{{ playbook_dir }}/.."
     system_max_file_descriptors: 32768
     ulimit_config:
       - {domain: '*', type: soft, item: nofile, value: 32768}
@@ -15,11 +15,17 @@
       - {domain: 'root', type: hard, item: nofile, value: 32768}
 
   vars_files:
+    - "hardening-config.yml"
     - "oldspeak-vault.yml"
 
   roles:
+    - system-updates
+    - system-hardening
+    - enable-standard-cronjobs
     - ulimit
+    - docker
     # - onion
+    # - gitea
     - oldspeak
 
 

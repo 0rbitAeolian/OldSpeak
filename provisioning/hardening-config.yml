@@ -1,0 +1,2 @@
+os_env_extra_user_paths:
+  - "/srv/bin"

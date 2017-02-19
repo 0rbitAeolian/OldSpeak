@@ -3,6 +3,7 @@ OSNAME			:= $(shell uname)
 CFLAGS			:= -std=c99
 DEBIAN_FRONTEND		:= noninteractive
 PYTHONUNBUFFERED	:= true
+ANSIBLE_NOCOWS		:= 1
 
 ifeq ($(OSNAME), Linux)
 OPEN_COMMAND		:= gnome-open
@@ -34,6 +35,7 @@ export OLDSPEAK_LOGLEVEL
 export DEBIAN_FRONTEND
 export PYTHONUNBUFFERED
 export OLDSPEAK_CONFIG_PATH
+export ANSIBLE_NOCOWS
 
 all: deps setup tests
 

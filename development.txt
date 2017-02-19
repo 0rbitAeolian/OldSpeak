@@ -1,5 +1,5 @@
 -r requirements.txt
-ansible==1.9.4
+ansible==2.2.1.0
 changelog==0.3.5
 coverage==4.2
 doc8==0.7.0
