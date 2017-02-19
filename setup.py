@@ -2,8 +2,8 @@
 
 import sys
 
-import ast
 import os
+from glob import glob
 from setuptools import setup
 from setuptools import Extension
 
@@ -12,6 +12,12 @@ sys.setdefaultencoding('utf-8')
 
 local_path = lambda *f: os.path.join(os.path.dirname(__file__), *f)
 local_file = lambda *f: open(local_path(*f), 'rb').read()
+
+
+INCLUDE_DIRS = [local_path('bf6p6')]
+
+if os.path.isdir('/srv/pkgs'):
+    INCLUDE_DIRS.extend(glob('/srv/pkgs/*'))
 
 
 bf6p6 = Extension(
@@ -28,10 +34,10 @@ bf6p6 = Extension(
         'bf6p6/src/bf6p6-constants.c',
         'bf6p6/src/bf6p6-genkey.c',
     ],
-    include_dirs=[local_path('bf6p6')],
+    include_dirs=INCLUDE_DIRS,
+
     libraries=['gpgme']
 )
-
 
 dependencies = filter(bool, map(bytes.strip, local_file('requirements.txt').splitlines()))
 
