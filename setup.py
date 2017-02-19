@@ -15,9 +15,10 @@ local_file = lambda *f: open(local_path(*f), 'rb').read()
 
 
 INCLUDE_DIRS = [local_path('bf6p6')]
+LIBRARY_DIRS = []
 
 if os.path.isdir('/srv/pkgs'):
-    INCLUDE_DIRS.extend(glob('/srv/pkgs/*'))
+    LIBRARY_DIRS.extend(glob('/srv/pkgs/*'))
 
 
 bf6p6 = Extension(
@@ -35,7 +36,8 @@ bf6p6 = Extension(
         'bf6p6/src/bf6p6-genkey.c',
     ],
     include_dirs=INCLUDE_DIRS,
-    libraries=['gpgme', 'libgit2']
+    library_dirs=LIBRARY_DIRS,
+    libraries=['gpgme']
 )
 
 dependencies = filter(bool, map(bytes.strip, local_file('requirements.txt').splitlines()))
