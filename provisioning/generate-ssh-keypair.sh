@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ssh-keygen -t rsa -b 4096 -f oldspeak.ssh.rsa.deploy -C deploy@oldspeak.server
+ssh-keygen -t rsa -b 4096 -f bellyfeel.ssh.rsa.deploy -C deploy@bellyfeel.server

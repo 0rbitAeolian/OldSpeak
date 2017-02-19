@@ -6,8 +6,11 @@
     - upstart
     - telnet
     - git
+    - coreutils
+    - tree
     - vim
     - curl
+    - cmake
     - git-svn
     - ca-certificates
     - build-essential
@@ -52,9 +55,11 @@
     - /srv/log/nginx
     - /srv/mail
     - /srv/uploads
+    - /srv/pkgs
     - /srv/private-data
     - /srv/public-data
     - /srv/run
+    - /srv/external
     - /srv/open-source
 
 - name: "installing python dependencies"
@@ -71,21 +76,38 @@
     - libnss3
     - libgpg-error-dev
     - libgpgme11-dev
-    - libgit2-dev
 
-- name: ensure we have the most updated version of the software from git
-  git: repo=git@github.com:0rbitAeolian/OldSpeak.git
-    dest=/srv/src
-    force=yes
-    version=master
-    accept_hostkey=yes
-    key_file={{ ssh_private_path }}
+- name: download libgit2
+  shell: wget https://github.com/libgit2/libgit2/archive/v{{ libgit2_version }}.tar.gz -O /srv/pkgs/libgit2-v{{ libgit2_version }}.tar.gz
+  args:
+    chdir: "/srv/pkgs"
 
-- name: copy docs homepage
-  shell: rsync -putavozl /srv/src/docs/build/ /srv/open-source/oldspeak/
+- name: extract libgit2
+  shell: tar xzf /srv/pkgs/libgit2-v{{ libgit2_version }}.tar.gz -C /srv/pkgs/
+  args:
+    chdir: "/srv/pkgs"
 
-- name: copy git repo
-  shell: rsync -putavozl /srv/src/.git/ /srv/open-source/oldspeak.git/
+- name: cmake [libgit2]
+  shell: cmake .
+  args:
+    chdir: "/srv/pkgs/libgit2-{{ libgit2_version }}"
+
+- name: make [libgit2]
+  shell: make
+  args:
+    chdir: "/srv/pkgs/libgit2-{{ libgit2_version }}"
+
+- name: make install [libgit2]
+  shell: make install
+  args:
+    chdir: "/srv/pkgs/libgit2-{{ libgit2_version }}"
+
+- name: rsync-copying local code to server
+  synchronize:
+    src: ../../../../
+    dest: /srv/src
+    links: yes
+    delete: yes
 
 # Python dependencies
 

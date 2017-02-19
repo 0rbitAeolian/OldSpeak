@@ -37,7 +37,7 @@ export PYTHONUNBUFFERED
 export OLDSPEAK_CONFIG_PATH
 export ANSIBLE_NOCOWS
 
-all: deps setup tests
+all: deps setup tests provision
 
 tests: lint smoke unit functional integration
 
@@ -155,7 +155,7 @@ web: pythonpath
 
 vault-edit:;	@ansible-vault edit provisioning/oldspeak-vault.yml
 deploy:;	@ansible-playbook -i provisioning/inventory provisioning/site.yml
-provision:	deps pythonpath static html-docs deploy
+provision:	deps pythonpath deploy
 
 quickie: deploy
 	@say 'done!'

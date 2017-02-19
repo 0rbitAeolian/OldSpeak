@@ -4,8 +4,8 @@
 
   user: root
   vars:
-    gitea_version: 1.0.1
-
+    gitea_version: "1.0.1"
+    libgit2_version: "0.25.0"
     local_repository_root_path: "{{ playbook_dir }}/.."
     system_max_file_descriptors: 32768
     ulimit_config:
@@ -19,13 +19,13 @@
     - "oldspeak-vault.yml"
 
   roles:
-    - system-updates
-    - system-hardening
-    - enable-standard-cronjobs
-    - ulimit
-    - docker
-    # - onion
-    # - gitea
+    # - system-updates
+    # - system-hardening
+    # - enable-standard-cronjobs
+    # - ulimit
+    # - docker
+    # # - onion
+    # # - gitea
     - oldspeak
 
 
