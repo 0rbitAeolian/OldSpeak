@@ -1,0 +1,11 @@
+- name: "installing gitea database dependencies"
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - mysql-server
+    - libmysqlclient-dev
+
+- name: ensuring gitea mysql database
+  mysql_db: name="{{ gitea_mysql_db }}" state=present
+
+- name: ensuring gitea mysql user
+  mysql_user: name="{{ gitea_mysql_user }}" password="{{ gitea_mysql_password }}" priv=*.*:ALL state=present

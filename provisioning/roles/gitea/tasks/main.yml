@@ -45,29 +45,10 @@
     group: "{{ gitea_group }}"
     mode: 0755
 
-- name: generate the gitea envfile
-  template:
-    src: gitea.env.j2
-    dest: "{{ gitea_envfile }}"
-  notify: restart gitea
+- name: install gitea config file
+  template: src=gitea.app.ini.j2
+    dest="/usr/local/bin/custom/conf/app.ini"
+    owner=root group=root mode=640
 
-- name: create the gitea systemd unit file
-  template:
-    src: gitea.unit.j2
-    dest: "{{ systemd_units_dir }}/gitea.service"
-  when: ansible_service_mgr == "systemd"
-  notify: restart gitea
-
-- name: create the gitea init.d start-up script
-  template:
-    src: gitea.init.j2
-    dest: "{{ initd_conf_dir }}/gitea"
-    mode: 0755
-  when: ansible_service_mgr != "systemd"
-  notify: restart gitea
-
-- name: enable and start the gitea web service
-  service:
-    name: gitea
-    state: started
-    enabled: yes
+- include: mysql.yml
+- include: services.yml

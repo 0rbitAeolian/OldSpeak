@@ -1,0 +1,11 @@
+- name: install gitea upstart
+  template: src=gitea.init.j2
+    dest="/etc/init/gitea.upstart"
+    owner=root group=root mode=644
+  notify: restart gitea
+
+- name: enable and start the gitea web service
+  service:
+    name: gitea
+    state: started
+    enabled: yes

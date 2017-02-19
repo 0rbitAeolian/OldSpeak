@@ -1,24 +1,24 @@
 - name: download libgpgme
-  shell: wget https://github.com/libgpgme/libgpgme/archive/v{{ libgpgme_version }}.tar.gz -O /srv/pkgs/libgpgme-v{{ libgpgme_version }}.tar.gz
+  shell: wget https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-{{ libgpgme_version }}.tar.bz2
   args:
     chdir: "/srv/pkgs"
 
 - name: extract libgpgme
-  shell: tar xzf /srv/pkgs/libgpgme-v{{ libgpgme_version }}.tar.gz -C /srv/pkgs/
+  shell: tar xjf /srv/pkgs/gpgme-{{ libgpgme_version }}.tar.bz2 -C /srv/pkgs/
   args:
     chdir: "/srv/pkgs"
 
-- name: cmake [libgpgme]
-  shell: cmake .
+- name: ./configure --prefix=/usr [libgpgme]
+  shell: ./configure --prefix=/usr
   args:
-    chdir: "/srv/pkgs/libgpgme-{{ libgpgme_version }}"
+    chdir: "/srv/pkgs/gpgme-{{ libgpgme_version }}"
 
 - name: make [libgpgme]
   shell: make
   args:
-    chdir: "/srv/pkgs/libgpgme-{{ libgpgme_version }}"
+    chdir: "/srv/pkgs/gpgme-{{ libgpgme_version }}"
 
 - name: make install [libgpgme]
   shell: make install
   args:
-    chdir: "/srv/pkgs/libgpgme-{{ libgpgme_version }}"
+    chdir: "/srv/pkgs/gpgme-{{ libgpgme_version }}"

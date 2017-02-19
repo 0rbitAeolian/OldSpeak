@@ -27,7 +27,7 @@ L=Tallinn
 O=$DOMAIN
 CN=$DOMAIN
 OU=$DOMAIN
-subjectAltName=DNS:www.$DOMAIN,DNS:api.$DOMAIN,,DNS:mail.$DOMAIN
+subjectAltName=DNS:www.$DOMAIN,DNS:api.$DOMAIN,,DNS:mail.$DOMAIN,DNS:git.$DOMAIN,DNS:docs.$DOMAIN,DNS:gpg.$DOMAIN,DNS:secure.$DOMAIN
 emailAddress=$EMAIL"
 
 file_prefix="lets_encrypt"

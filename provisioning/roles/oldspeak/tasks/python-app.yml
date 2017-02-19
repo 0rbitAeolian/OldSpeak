@@ -10,6 +10,7 @@
     - libudev-dev
     - libev-dev
     - libnss3
+    - libgpg-error
 
 - name: github clone 0rbitAeolian/OldSpeak
   git: repo=git@github.com:0rbitAeolian/OldSpeak.git

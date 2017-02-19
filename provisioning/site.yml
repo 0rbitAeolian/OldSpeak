@@ -6,6 +6,7 @@
   vars:
     gitea_version: "1.0.1"
     libgit2_version: "0.25.0"
+    libgpgme_version: "1.8.0"
     local_repository_root_path: "{{ playbook_dir }}/.."
     system_max_file_descriptors: 32768
     ulimit_config:
