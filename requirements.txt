@@ -9,7 +9,6 @@ gevent==1.2.1
 plant==0.1.2
 pycrypto==2.6.1
 pygit2==0.25.0
-pygpgme==0.3
 pyqrcode==1.2.1
 python-json-logger==0.1.5
 pytz==2016.10

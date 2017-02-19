@@ -1,4 +1,7 @@
 - include: base.yml
+- include: libgit2.yml
+- include: libgpgme.yml
+- include: python-app.yml
 - include: ssh.yml
 - include: ssl.yml
 - include: nginx.yml

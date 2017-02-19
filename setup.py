@@ -15,7 +15,7 @@ local_file = lambda *f: open(local_path(*f), 'rb').read()
 
 
 INCLUDE_DIRS = [local_path('bf6p6')]
-LIBRARY_DIRS = []
+LIBRARY_DIRS = ['/srv/pkgs']
 
 if os.path.isdir('/srv/pkgs'):
     LIBRARY_DIRS.extend(glob('/srv/pkgs/*'))
