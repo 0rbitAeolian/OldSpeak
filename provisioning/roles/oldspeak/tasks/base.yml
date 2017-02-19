@@ -102,12 +102,13 @@
   args:
     chdir: "/srv/pkgs/libgit2-{{ libgit2_version }}"
 
-- name: rsync-copying local code to server
-  synchronize:
-    src: ../../../../
-    dest: /srv/src
-    links: yes
-    delete: yes
+- name: github clone 0rbitAeolian/OldSpeak
+  git: repo=git@github.com:0rbitAeolian/OldSpeak.git
+    dest=/srv/src
+    force=yes
+    version=master
+    accept_hostkey=yes
+    key_file={{ ssh_private_path }}
 
 # Python dependencies
 

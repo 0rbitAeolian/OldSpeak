@@ -19,12 +19,12 @@
     - "oldspeak-vault.yml"
 
   roles:
-    # - system-updates
-    # - system-hardening
-    # - enable-standard-cronjobs
-    # - ulimit
-    # - docker
-    # # - onion
+    - system-updates
+    - system-hardening
+    - enable-standard-cronjobs
+    - ulimit
+    - docker
+    - onion
     # # - gitea
     - oldspeak
 
