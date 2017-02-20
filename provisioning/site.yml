@@ -15,6 +15,9 @@
       - {domain: 'root', type: soft, item: nofile, value: 32768}
       - {domain: 'root', type: hard, item: nofile, value: 32768}
 
+    digital_ocean_volumes:
+      - volume-nyc1-02
+
   vars_files:
     - "hardening-config.yml"
     - "oldspeak-vault.yml"

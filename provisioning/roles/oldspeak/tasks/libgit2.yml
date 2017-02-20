@@ -2,21 +2,25 @@
   shell: wget https://github.com/libgit2/libgit2/archive/v{{ libgit2_version }}.tar.gz -O /srv/pkgs/libgit2-v{{ libgit2_version }}.tar.gz
   args:
     chdir: "/srv/pkgs"
+    warn: no
 
 - name: extract libgit2
   shell: tar xzf /srv/pkgs/libgit2-v{{ libgit2_version }}.tar.gz -C /srv/pkgs/
   args:
     chdir: "/srv/pkgs"
+    warn: no
 
 - name: cmake [libgit2]
   shell: cmake .
   args:
     chdir: "/srv/pkgs/libgit2-{{ libgit2_version }}"
+    warn: no
 
 - name: make [libgit2]
   shell: make
   args:
     chdir: "/srv/pkgs/libgit2-{{ libgit2_version }}"
+    warn: no
 
 - name: make install [libgit2]
   shell: make install

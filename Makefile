@@ -92,7 +92,7 @@ integration: database
 
 tests: unit functional integration
 
-deps: pip pre-static
+deps: pip
 
 remove:
 	-@pip uninstall -y oldspeak >> logs/pip-uninstall.log

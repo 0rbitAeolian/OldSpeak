@@ -46,6 +46,13 @@
     mode: 0755
 
 - name: install gitea config file
+  file: path=/usr/local/bin/custom/conf
+    state=directory
+    owner=root
+    group=root
+    mode=640
+
+- name: install gitea config file
   template: src=gitea.app.ini.j2
     dest="/usr/local/bin/custom/conf/app.ini"
     owner=root group=root mode=640

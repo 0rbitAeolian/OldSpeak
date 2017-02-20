@@ -1,24 +1,37 @@
+- name: "installing libgpgme build dependencies"
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - libffi-dev
+    - libssl-dev
+    - libgcrypt11-dev
+    - libnss3
+
 - name: download libgpgme
   shell: wget https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-{{ libgpgme_version }}.tar.bz2
   args:
     chdir: "/srv/pkgs"
+    warn: no
 
 - name: extract libgpgme
   shell: tar xjf /srv/pkgs/gpgme-{{ libgpgme_version }}.tar.bz2 -C /srv/pkgs/
   args:
     chdir: "/srv/pkgs"
+    warn: no
 
 - name: ./configure --prefix=/usr [libgpgme]
   shell: ./configure --prefix=/usr
   args:
     chdir: "/srv/pkgs/gpgme-{{ libgpgme_version }}"
+    warn: no
 
 - name: make [libgpgme]
   shell: make
   args:
     chdir: "/srv/pkgs/gpgme-{{ libgpgme_version }}"
+    warn: no
 
 - name: make install [libgpgme]
   shell: make install
   args:
     chdir: "/srv/pkgs/gpgme-{{ libgpgme_version }}"
+    warn: no

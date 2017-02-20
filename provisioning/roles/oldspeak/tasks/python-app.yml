@@ -10,15 +10,10 @@
     - libudev-dev
     - libev-dev
     - libnss3
-    - libgpg-error
+    - libgpg-error-dev
 
-- name: github clone 0rbitAeolian/OldSpeak
-  git: repo=git@github.com:0rbitAeolian/OldSpeak.git
-    dest=/srv/src
-    force=yes
-    version=master
-    accept_hostkey=yes
-    key_file={{ ssh_private_path }}
+- name: sync local repo with server 0rbitAeolian/OldSpeak
+  synchronize: src="{{ local_repository_root_path }}" dest="/srv/src" recursive=yes
 
 # Python dependencies
 
@@ -46,5 +41,10 @@
   shell: "/srv/venv/bin/python setup.py install"
   args:
     chdir: "/srv/src"
+  environment:
+    CPLUS_INCLUDE_PATH: "/srv/pkgs/gpgme-{{ libgpgme_version }}:/srv/pkgs/libgit2-{{ libgit2_version }}"
+    C_INCLUDE_PATH: "/srv/pkgs/gpgme-{{ libgpgme_version }}:/srv/pkgs/libgit2-{{ libgit2_version }}"
+    LD_LIBRARY_PATH: "/srv/pkgs/gpgme-{{ libgpgme_version }}:/srv/pkgs/libgit2-{{ libgit2_version }}"
+
   notify:
     - restart python-app

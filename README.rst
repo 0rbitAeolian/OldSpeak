@@ -110,4 +110,5 @@ If everything worked fine, you should be able to access
 TODO
 ====
 
-- Deploy a [PaaSTA stack](https://github.com/Yelp/paasta)
+- https://github.com/Yelp/paasta
+- https://www.youtube.com/watch?v=YEBfamv-_do
