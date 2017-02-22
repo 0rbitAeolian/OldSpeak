@@ -1,17 +1,30 @@
 ---
 - hosts:
-    - falcao.it
+    - oldspeak
 
   user: root
   vars:
-    root_domain_tls_cert_path:  /etc/ssl/certs/falcao.it.cert
-    root_domain_tls_key_path:  /etc/ssl/certs/falcao.it.key
+    root_domain_tls_cert_path:  /etc/ssl/certs/oldspeak.cert
+    root_domain_tls_key_path:  /etc/ssl/certs/oldspeak.key
     hidden_service_active: yes
+    local_repository_root_path: "{{ playbook_dir }}/.."
+    system_max_file_descriptors: 32768
+    ulimit_config:
+      - {domain: '*', type: soft, item: nofile, value: 32768}
+      - {domain: '*', type: hard, item: nofile, value: 32768}
+      - {domain: 'root', type: soft, item: nofile, value: 32768}
+      - {domain: 'root', type: hard, item: nofile, value: 32768}
+
+    digital_ocean_volumes:
+      - name: "volume-nyc1-02"
+        mountpoints:
+          - /srv
 
     # looking for more vars? check the "*-vault.yml" files listed
     # below:
 
   vars_files:
+    - "hardening-config.yml"
     - "oldspeak-vault.yml"
 
   tasks:
@@ -35,3 +48,11 @@
     - ssl
     - web
     - onion
+
+
+# TODO:
+# -----
+#
+# - https://github.com/jacoelho/ansible.ipsec
+# - https://en.wikipedia.org/wiki/IPsec
+# - https://github.com/neilalexander/sigmavpn/

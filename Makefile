@@ -155,7 +155,7 @@ web: pythonpath
 # |_____/ |______ |       |_____ |_____|    |    |  |  | |______ |  \_|    |
 
 vault-edit:;	@ansible-vault edit provisioning/oldspeak-vault.yml
-deploy:;	@ansible-playbook -i provisioning/inventory provisioning/site.yml
+deploy:;	@ansible-playbook -i provisioning/inventory provisioning/playbook.yml
 provision:	deps pythonpath deploy
 
 quickie: deploy
