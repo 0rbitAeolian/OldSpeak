@@ -28,3 +28,4 @@ logs/*.log
 *.dylib
 build/
 integration-data/
+cebola.txt

@@ -1,0 +1,24 @@
+- name: "[prosody] adding apt key"
+  apt_key: keyserver=keyserver.ubuntu.com id=36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+- name: "[prosody] create mysql db"
+  mysql_db: name="{{ oldspeak_mysql_db }}" state=present
+
+- name: "[prosody] create mysql user"
+  mysql_user: name="{{ oldspeak_mysql_user }}" password="{{ oldspeak_mysql_password }}" priv="*.*:ALL,GRANT" state=present
+
+- name: "[prosody] installing dependencies"
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - telnet
+    - python-mysqldb
+    - prosody
+    - lua-event
+    - lua-zlib
+    - lua-dbi-mysql
+
+- name: "[prosody] setting up configuration file"
+  template: src=conf.lua dest=/etc/prosody/prosody.cfg.lua mode=0644
+
+- name: "[prosody] starting prosody server"
+  service: name=prosody state=started enabled=yes

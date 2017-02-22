@@ -1,0 +1,14 @@
+description     "oldspeak app"
+author          "Gabriel Falcao <gabriel@nacaolivre.org>"
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+respawn
+respawn limit 5 60
+
+chdir /srv/mail
+
+env INBOX_PORT=25
+
+exec {{ venv_path }}/bin/python /srv/src/mailserver.py

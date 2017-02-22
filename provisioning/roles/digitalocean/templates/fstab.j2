@@ -1,0 +1,14 @@
+# db    db  .d88b.  db      db    db .88b  d88. d88888b .d8888.
+# 88    88 .8P  Y8. 88      88    88 88'YbdP`88 88'     88'  YP
+# Y8    8P 88    88 88      88    88 88  88  88 88ooooo `8bo.
+# `8b  d8' 88    88 88      88    88 88  88  88 88~~~~~   `Y8b.
+#  `8bd8'  `8b  d8' 88booo. 88b  d88 88  88  88 88.     db   8D
+#    YP     `Y88P'  Y88888P ~Y8888P' YP  YP  YP Y88888P `8888Y'
+#
+# {{ ansible_managed }}
+
+LABEL=DOROOT   /               ext4    noatime,errors=remount-ro    0 1
+proc           /proc           proc    nodev,noexec,nosuid          0 0
+
+{% for volume in digital_ocean_volumes %}/dev/disk/by-id/scsi-0DO_Volume_{{ volume.name }} {{ volume.mountpoint }} ext4 defaults,nofail,discard      0 0
+{% endfor %}

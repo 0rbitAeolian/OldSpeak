@@ -1,0 +1,58 @@
+---
+# Handlers for Nginx notifications.
+
+- name: stop nginx
+  service: >
+    name=nginx
+    state=stopped
+
+- name: start nginx
+  service: >
+    name=nginx
+    state=started
+    enabled=yes
+
+- name: restart nginx
+  service: >
+    name=nginx
+    state=restarted
+    enabled=yes
+
+# handlers for the gunicorn server at port [falkwnapp_http_port](4000)
+
+- name: stop python-app
+  service: >
+    name=python-app
+    state=stopped
+
+- name: start python-app
+  service: >
+    name=python-app
+    state=started
+    enabled=yes
+
+- name: restart python-app
+  service: >
+    name=python-app
+    state=restarted
+    enabled=yes
+
+
+# handlers for the falkwn-mail server (port 25)
+
+- name: stop falkwn-mail
+  service: >
+    name=falkwn-mail
+    state=stopped
+
+- name: start falkwn-mail
+  service: >
+    name=falkwn-mail
+    state=started
+    enabled=yes
+
+- name: restart falkwn-mail
+  service: >
+    name=falkwn-mail
+    state=restarted
+    enabled=yes

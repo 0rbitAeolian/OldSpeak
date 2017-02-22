@@ -39,6 +39,7 @@ export ANSIBLE_NOCOWS
 
 all: deps setup tests provision
 
+
 tests: lint smoke unit functional integration
 
 build: clean
@@ -112,7 +113,7 @@ pythonpath:
 	-@(pip uninstall -y oldspeak 2>&1) > /dev/null 2>&1
 	-@(python setup.py develop 2>&1) > /dev/null 2>&1
 
-release: build tests dist
+release: clean setup build tests dist
 	@./.release
 	@make dist
 
@@ -160,3 +161,7 @@ provision:	deps pythonpath deploy
 quickie: deploy
 	@say 'done!'
 	@say 'done and done'
+
+docker:
+	docker build -t oldspeak .
+	docker run oldspeak

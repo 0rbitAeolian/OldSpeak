@@ -1,0 +1,38 @@
+---
+
+# - name: ensure droplet is up
+#   digital_ocean: >
+#     state=active
+#     command=droplet
+#     name=oldspeak
+#     size_id=1gb
+#     api_token={{ digital_ocean_api_token }}
+#     region_id=fra1
+#     image_id=ubuntu-14-04-x64
+#   register: droplet_web
+
+- name: "[digital-ocean] create mountpoint directories"
+  file:
+    path="{{ item.mountpoint }}"
+    state=directory
+  with_items: "{{ digital_ocean_volumes }}"
+
+- name: "[digital-ocean] configure volumes with ext4"
+  shell: "mkfs.ext4 -F /dev/disk/by-id/scsi-0DO_Volume_{{ item.name }}"
+  ignore_errors: yes
+  with_items: "{{ digital_ocean_volumes }}"
+
+- name: "[digital-ocean] mount volumes"
+  shell: "mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_{{ item.name }} {{ item.mountpoint }}"
+  ignore_errors: yes
+  with_items: "{{ digital_ocean_volumes }}"
+
+- name: "[digital-ocean] configure fstab"
+  template: src=fstab.j2
+    dest="/etc/fstab"
+    owner=root
+    group=root
+    mode=644
+
+- name: "[digital-ocean] reload fstab"
+  shell: mount -a

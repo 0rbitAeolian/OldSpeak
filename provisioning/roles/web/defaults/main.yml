@@ -1,0 +1,12 @@
+---
+
+venv_path: /srv/venv
+frontend_static_path: /srv/src/oldspeak/static
+falkwnapp_http_port: 4000
+gunicorn_timeout: 10
+
+nginx_domains:
+  - fqdn: private.falcao.it
+    ssl:
+      key: |
+        -- SSL PRIVATE KEY ---

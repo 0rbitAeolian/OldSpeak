@@ -1,0 +1,18 @@
+---
+bitcoind_testnet: 0
+bitcoind_server: 1
+bitcoind_proxy: False
+bitcoind_maxconnections: 2048
+bitcoind_rpctimeout: 30
+bitcoind_rpcallowip:
+  - 127.0.0.1
+bitcoind_rpcport:
+bitcoind_gen: 1
+bitcoind_txindex: 0
+bitcoind_disablewallet: 0
+bitcoind_sysperms: 0
+bitcoind_blocknotify: null
+bitcoind_datadir: /home/bitcoind/.bitcoin
+bitcoind_debug: True
+bitcoind_rpcworkqueue: 0
+bitcoind_maxmempool: 0

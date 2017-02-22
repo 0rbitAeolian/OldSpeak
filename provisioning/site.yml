@@ -4,6 +4,9 @@
 
   user: root
   vars:
+    root_domain_tls_cert_path:  /etc/ssl/certs/oldspeak.cert
+    root_domain_tls_key_path:  /etc/ssl/certs/oldspeak.key
+    hidden_service_active: yes
     gitea_version: "1.0.1"
     libgit2_version: "0.25.0"
     libgpgme_version: "1.8.0"
@@ -16,21 +19,31 @@
       - {domain: 'root', type: hard, item: nofile, value: 32768}
 
     digital_ocean_volumes:
-      - volume-nyc1-02
+      - name: "volume-nyc1-02"
+        mountpoints:
+          - /mnt/volume
 
   vars_files:
     - "hardening-config.yml"
     - "oldspeak-vault.yml"
 
   roles:
+    # # digitalocean turns-on the droplet(s),
+    # # so it should be executed first:
+    # - digitalocean
+
+    # # system integrity, can be commented out in favor of speedup application deployment
     # - system-updates
     # - system-hardening
     # - enable-standard-cronjobs
     # - ulimit
-    # - docker
+
+    # python application
+    # - mysql-db
+    # - prosody
+    # - ssl
+    - web
     - onion
-    - gitea
-    - oldspeak
 
 
 # TODO:

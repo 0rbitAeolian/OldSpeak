@@ -1,0 +1,3 @@
+webrtc_mysql_db_name: "prosody_roster"
+webrtc_mysql_db_user: "root"
+webrtc_mysql_db_password: "toor1234"

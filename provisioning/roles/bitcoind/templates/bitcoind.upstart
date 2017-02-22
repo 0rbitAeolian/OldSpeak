@@ -1,0 +1,14 @@
+description     "bitcoind"
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+respawn
+respawn limit 5 60
+
+chdir {{ bitcoind_datadir }}
+
+setuid bitcoind
+setgid bitcoind
+
+exec /usr/bin/bitcoind -datadir={{ bitcoind_datadir }} -printtoconsole

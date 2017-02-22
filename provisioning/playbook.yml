@@ -1,0 +1,37 @@
+---
+- hosts:
+    - falcao.it
+
+  user: root
+  vars:
+    root_domain_tls_cert_path:  /etc/ssl/certs/falcao.it.cert
+    root_domain_tls_key_path:  /etc/ssl/certs/falcao.it.key
+    hidden_service_active: yes
+
+    # looking for more vars? check the "*-vault.yml" files listed
+    # below:
+
+  vars_files:
+    - "oldspeak-vault.yml"
+
+  tasks:
+    - debug: var=ansible_all_ipv4_addresses
+
+  roles:
+
+    # # digitalocean turns-on the droplet(s),
+    # # so it should be executed first:
+    # - digitalocean
+
+    # system integrity, can be commented out in favor of speedup application deployment
+    - system-updates
+    - system-hardening
+    - enable-standard-cronjobs
+    - ulimit
+
+    - oldspeak
+    - mysql-db
+    - prosody
+    - ssl
+    - web
+    - onion

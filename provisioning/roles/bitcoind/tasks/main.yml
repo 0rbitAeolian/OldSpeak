@@ -1,0 +1,73 @@
+---
+
+- name: Check for RPC user
+  fail:
+    msg: "Server mode is set and bitcoind_rpcuser has not been defined"
+  when: bitcoind_server == 1 and bitcoind_rpcuser|default(False) == False
+
+- name: Check for RPC password
+  fail:
+    msg: "Server mode is set and bitcoind_rpcpassword has not been defined"
+  when: bitcoind_server == 1 and bitcoind_rpcpassword|default(False) == False
+
+- debug: msg="data directory is {{ bitcoind_datadir }}"
+
+- name: Add bitcoind group
+  group: name=bitcoind state=present
+
+- name: Add bitcoind user
+  user:
+    name=bitcoind
+    group=bitcoind
+    createhome=yes
+    system=yes
+    state=present
+
+- name: Ensure bitcoind_datadir exists
+  file:
+    path={{ bitcoind_datadir }}
+    state=directory
+    owner=bitcoind
+    group=bitcoind
+
+- name: Debian | Set bitcoind_loaded_os_family
+  set_fact:
+    bitcoind_loaded_os_family: "{{ ansible_os_family }}"
+
+- name: Debian | Adds bitcoind repository
+  apt_repository:
+    repo='ppa:bitcoin/bitcoin'
+    state=present
+  register: repo_added
+
+- name: Debian | Update apt cache
+  apt:
+    update_cache=yes
+  when: repo_added.changed
+
+- name: Debian | Install bitcoind
+  apt:
+    name=bitcoind
+    state=latest
+  notify: restart bitcoind
+
+- name: Create log dir
+  file:
+    path=/var/log/bitcoind
+    state=directory
+    owner=bitcoind group=bitcoind mode=0755
+
+- name: ensure the beacon-server has an upstart configuration
+  template: src="bitcoind.upstart" dest="/etc/init/bitcoind.conf"
+    owner=root group=root mode=0644
+  notify: restart bitcoind
+
+- name: Configure bitcoind
+  template:
+    src=bitcoin.conf.j2
+    dest={{ bitcoind_datadir }}/bitcoin.conf
+    owner=bitcoind
+    group=bitcoind
+    mode=0600
+  notify:
+    restart bitcoind

@@ -1,0 +1,2 @@
+root_domain_tls_cert_path:  /etc/ssl/certs/root.cert
+root_domain_tls_key_path:  /etc/ssl/certs/root.key

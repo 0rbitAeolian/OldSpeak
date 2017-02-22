@@ -1,5 +1,0 @@
-- name: "install ssh private key"
-  copy: content="{{ ssh_private }}" dest="{{ ssh_private_path }}" mode=0600 owner=oldspeak group=oldspeak
-
-- name: "install ssh public key"
-  copy: content="{{ ssh_public }}" dest="{{ ssh_public_path }}" mode=0664 owner=oldspeak group=oldspeak-services

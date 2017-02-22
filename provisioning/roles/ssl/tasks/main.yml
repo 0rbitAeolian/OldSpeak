@@ -1,0 +1,5 @@
+- name: "install ssl key"
+  copy: content="{{ ssl_key }}" dest="{{ root_domain_tls_key_path }}" mode=0644 group=www-data
+
+- name: "install ssl cert"
+  copy: content="{{ ssl_cert }}" dest="{{ root_domain_tls_cert_path }}" mode=0644 group=www-data

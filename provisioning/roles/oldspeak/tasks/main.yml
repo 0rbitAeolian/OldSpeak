@@ -1,11 +1,41 @@
-- include: base.yml
-- include: libgit2.yml
-- include: libgpgme.yml
-- include: python-app.yml
-- include: ssh.yml
-- include: ssl.yml
-- include: nginx.yml
-- include: wsgi.yml
+- name: "create oldspeak application group"
+  group:
+    name: oldspeak
+    state: present
+
+- name: "create main service group"
+  group:
+    name: oldspeak-services
+    state: present
+
+- name: "creating oldspeak application user"
+  user: >
+    name=oldspeak
+    shell=/usr/sbin/nologin
+    group=oldspeak
+    groups=oldspeak,oldspeak-services
+    home=/srv/run
+
+- name: "add www-data to the services group"
+  user: >
+    name=www-data
+    groups=www-data,oldspeak-services
+    home=/srv/run
+
+- name: "creating folders"
+  file: path={{ item }} state=directory recurse=yes owner=oldspeak group=oldspeak mode=0775
+  with_items:
+    - /srv/ssh
+    - /srv/log
+    - /srv/log/nginx
+    - /srv/mail
+    - /srv/uploads
+    - /srv/pkgs
+    - /srv/private-data
+    - /srv/public-data
+    - /srv/run
+    - /srv/external
+    - /srv/open-source
 
 - name: "ensure main permissions"
   shell: chown -R oldspeak:oldspeak-services "{{ item }}"
@@ -27,15 +57,3 @@
     - /srv/public-data
     - /srv/src
     - /srv/src/static
-
-- name: "www-data owner of /srv/src/static"
-  shell: chown -R www-data:oldspeak-services /srv/src/static
-
-- name: "fix permissions of dirs"
-  shell: find /srv -type d -exec chmod 755 {} \;
-
-- name: restart application
-  service: name=python-app state=restarted
-
-- name: restart nginx
-  service: name=nginx state=restarted

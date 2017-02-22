@@ -1,0 +1,103 @@
+- name: "[base] installing dependencies"
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - bash-completion
+    - build-essential
+    - ca-certificates
+    - curl
+    - emacs24-nox
+    - git
+    - git-svn
+    - gnupg
+    - gnupg2
+    - htop
+    - docker.io
+    - libev-dev
+    - libffi-dev
+    - libmp3lame-dev
+    - libnacl-dev
+    - libssl-dev
+    - libudev-dev
+    - libxml2-dev
+    - libxslt1-dev
+    - libzmq-dev
+    - mysql-client
+    - mysql-server
+    - libmysqlclient-dev
+    - nginx
+    - ntp
+    - pkg-config
+    - python
+    - python-dev
+    - python-mysqldb
+    - python-pip
+    - python-virtualenv
+    - redis-server
+    - redis-tools
+    - rsync
+    - subversion
+    - telnet
+    - tree
+    - vim
+    - virtualenvwrapper
+    - wget
+
+- name: copy backend app
+  synchronize: src="{{ local_repository_root_path }}" dest="/srv/src" recursive=yes
+  notify:
+    - restart python-app
+    - restart falkwn-mail
+
+- name: ensure docs folder
+  file: path="/srv/docs" state=directory
+
+- name: ensure private folder
+  file: path="/srv/private" state=directory
+
+- name: ensure mail folder
+  file: path="/srv/mail" state=directory
+
+- name: fix owner permissions
+  shell: "chown -R www-data: /srv/src"
+
+- name: fix mode permissions
+  shell: "chmod -R 755 /srv/src"
+
+
+- name: install latest setuptools
+  pip: name=setuptools state=latest
+       virtualenv="{{ venv_path }}"
+
+- name: install latest pip
+  pip: name=pip state=latest
+       virtualenv="{{ venv_path }}"
+
+- name: install requirements
+  pip: requirements="/srv/src/requirements.txt"
+       virtualenv="{{ venv_path }}"
+
+- name: install python-app upstart script
+  template: src=gunicorn.upstart
+    dest="/etc/init/python-app.conf"
+    owner=root group=root mode=644
+  notify: restart python-app
+  tags:
+    - backend
+
+- name: test python-app upstart script
+  shell: init-checkconf /etc/init/python-app.conf && initctl check-config python-app
+  tags:
+    - backend
+
+- name: install falkwn-mail upstart script
+  template: src=mailserver.upstart
+    dest="/etc/init/falkwn-mail.conf"
+    owner=root group=root mode=644
+  notify: restart falkwn-mail
+  tags:
+    - backend
+
+- name: test falkwn-mail upstart script
+  shell: init-checkconf /etc/init/falkwn-mail.conf && initctl check-config falkwn-mail
+  tags:
+    - backend

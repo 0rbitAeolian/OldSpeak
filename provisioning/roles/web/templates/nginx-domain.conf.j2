@@ -1,0 +1,116 @@
+# {{ ansible_managed }}
+
+limit_req_zone $binary_remote_addr zone=default:10m rate=32r/s;
+
+real_ip_header    X-Forwarded-For;
+real_ip_recursive on;
+
+
+server {
+    listen 443 default ssl;
+    root /dev/null;
+
+    server_name {{ root_domain }};
+    server_name api.{{ root_domain }};
+
+    # limit_req zone=default burst=16 nodelay;
+
+    access_log /var/log/nginx/{{ root_domain }}.access.log;
+    error_log /var/log/nginx/{{ root_domain }}.error.log;
+
+    {% include "nginx.server.ssl.j2" %}
+    keepalive_requests 200;
+    keepalive_timeout 120s;
+    client_max_body_size 8M;
+
+    # add_header Strict-Transport-Security "max-age=31536000";
+
+    location / {
+        # checks for static file, if not found proxy to app
+        try_files $uri @falkwnapp;
+    }
+
+    location @falkwnapp {
+        root /dev/null;
+        proxy_pass                      http://127.0.0.1:{{ falkwnapp_http_port }};
+        proxy_set_header                X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header                X-Forwarded-Proto https;
+        proxy_set_header                Host $http_host;
+        proxy_buffering                 off;
+        proxy_redirect                  off;
+        proxy_pass_request_headers      on;
+        proxy_pass_request_body         on;
+        proxy_send_timeout              {{ gunicorn_timeout }};
+    }
+
+    # location ~ ^/s/(.+\.(?:gif|jpe?g|png))$ {
+    #     alias /srv/src/static/dist/favicon.ico;
+    # }
+    location /dist/ {
+        alias /srv/src/oldspeak/static/dist/;
+    }
+    location /favicon.ico {
+        alias /srv/src/static/favicon.ico;
+    }
+}
+
+server {
+    listen 443 ssl;
+    root /srv/private;
+
+    server_name private.{{ root_domain }};
+
+    # limit_req zone=default burst=16 nodelay;
+
+    access_log /var/log/nginx/private.{{ root_domain }}.access.log;
+    error_log /var/log/nginx/private.{{ root_domain }}.error.log;
+
+    {% include "nginx.server.ssl.j2" %}
+
+    keepalive_requests 200;
+    keepalive_timeout 120s;
+    client_max_body_size 1M;
+
+    location / {
+        autoindex on;
+    }
+}
+
+server {
+    listen 443 ssl;
+    root /srv/private;
+
+    server_name blog.{{ root_domain }};
+    server_name git.{{ root_domain }};
+
+    # limit_req zone=default burst=16 nodelay;
+
+    access_log /var/log/nginx/private.{{ root_domain }}.access.log;
+    error_log /var/log/nginx/private.{{ root_domain }}.error.log;
+
+    {% include "nginx.server.ssl.j2" %}
+
+    keepalive_requests 200;
+    keepalive_timeout 120s;
+    client_max_body_size 8M;
+
+
+    location / {
+        root /srv/src/blog/blog/html;
+    }
+}
+
+server {
+    listen 80 default;
+    root /dev/null;
+    server_name {{ root_domain }};
+    server_name api.{{ root_domain }};
+    server_name blog.{{ root_domain }};
+    server_name git.{{ root_domain }};
+    server_name private.{{ root_domain }};
+    server_name mail.{{ root_domain }};
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}

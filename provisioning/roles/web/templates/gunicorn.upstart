@@ -1,0 +1,23 @@
+description     "oldspeak app"
+author          "Gabriel Falcao <gabriel@nacaolivre.org>"
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+respawn
+respawn limit 5 60
+
+chdir /srv/src
+
+{% for key, value in application_env.items() %}env {{ key }}={{ value }}
+{% endfor %}
+
+exec {{ venv_path }}/bin/gunicorn \
+     --error-logfile /var/log/python-app.error.log \
+     --access-logfile /var/log/python-app.access.log \
+     --log-level debug \
+     {% for key, value in application_env.items() %}-e {{ key }}='{{ value }}' \
+     {% endfor %}
+     --chdir /srv/src \
+     -b 0.0.0.0:{{ falkwnapp_http_port }} \
+     oldspeak.application:server
